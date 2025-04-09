@@ -100,9 +100,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            photoUri?.let {
-                imageView.setImageURI(it)
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                // Photo was taken successfully
+                photoUri?.let {
+                    imageView.setImageURI(it)
+                }
+            } else {
+                // User cancelled the photo capture
+                photoUri = null
+                currentPhotoPath = ""
+
+                // Delete the empty file that was created
+                if (currentPhotoPath.isNotEmpty()) {
+                    val file = File(currentPhotoPath)
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                }
             }
         }
     }
